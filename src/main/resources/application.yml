@@ -1,0 +1,20 @@
+server:
+    port: ${SERVER_PORT:9090}
+    servlet:
+        context-path: ${CONTEXT_PATH}
+    ssl:
+        key-store: classpath:${KEY_STORE}
+        key-store-password: ${KEY_STORE_PASSWORD}
+        key-alias: ${KEY_ALIAS}
+        key-password: ${KEY_PASSWORD}
+        enabled: true
+        trust-store: classpath:${TRUST_STORE}
+        trust-store-password: ${TRUST_STORE_PASSWORD}
+        client-auth: need
+spring:
+    lifecycle:
+        timeout-per-shutdown-phase: ${TIMEOUT_PER_SHUTDOWN_PHASE:20s}
+auth:
+    secret: ${SECRET}
+    api-key: ${API_KEY}
+    x509clients: ${X509_CLIENTS}
