@@ -30,7 +30,6 @@ dependencies {
 	implementation("com.sun.xml.bind:jaxb-impl:2.3.0")
 	implementation("com.sun.xml.bind:jaxb-core:2.3.0")
 	implementation("javax.xml.bind:jaxb-api:2.3.1")
-//	implementation("javax.activation:activation:1.1.1")
 	implementation("jakarta.xml.bind:jakarta.xml.bind-api:2.3.2")
 	implementation("org.glassfish.jaxb:jaxb-runtime:2.3.2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")

@@ -1,10 +1,13 @@
 package com.marvastsi.spring.security.x509.application.config.security
 
-import com.marvastsi.spring.security.x509.application.config.security.filters.ApiKeyFilter
 import com.marvastsi.spring.security.x509.application.config.security.filters.JwtAuthenticationFilter
 import com.marvastsi.spring.security.x509.domain.commons.utils.JwtUtil
 import com.marvastsi.spring.security.x509.domain.model.User
 import com.marvastsi.spring.security.x509.domain.services.UserService
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
+import org.apache.logging.log4j.Marker
+import org.apache.logging.log4j.MarkerManager
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -15,9 +18,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter
 
 
 @Configuration
@@ -67,8 +68,11 @@ class SecurityConfig(
                     setOf("ROLE_SYSTEM")
                 )
             } else {
+                logger.error(MarkerManager.Log4jMarker("SECURITY"),"Access Denied.")
                 throw BadCredentialsException("Access Denied.")
             }
         }
     }
+
+    val logger: Logger = LogManager.getLogger(SecurityConfig::class.java.name)
 }
