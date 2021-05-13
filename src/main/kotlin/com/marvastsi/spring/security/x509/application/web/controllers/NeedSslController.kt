@@ -13,7 +13,7 @@ import java.security.Principal
 @RestController
 @RequestMapping("/need-ssl/user")
 class NeedSslController {
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAuthority('ROLE_SYSTEM')")
     @GetMapping("/details")
     fun user(principal: Principal): ResponseEntity<UserDTO> {
         val currentUser = (principal as Authentication).principal as UserDetails

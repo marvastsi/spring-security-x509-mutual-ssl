@@ -64,10 +64,10 @@ class SecurityConfig(
                 User(
                     username,
                     "",
-                    setOf("ROLE_USER")
+                    setOf("ROLE_SYSTEM")
                 )
             } else {
-                throw UsernameNotFoundException("Access Denied.")
+                throw BadCredentialsException("Access Denied.")
             }
         }
     }
