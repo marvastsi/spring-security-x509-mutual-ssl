@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.marvastsi"
-version = "2.0.0-SNAPSHOT"
+version = "2.0.0"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
