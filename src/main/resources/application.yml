@@ -7,10 +7,10 @@ server:
         key-store-password: ${KEY_STORE_PASSWORD}
         key-alias: ${KEY_ALIAS}
         key-password: ${KEY_PASSWORD}
-        enabled: true
+#        enabled: true
         trust-store: classpath:${TRUST_STORE}
         trust-store-password: ${TRUST_STORE_PASSWORD}
-        client-auth: need
+        client-auth: want
 spring:
     lifecycle:
         timeout-per-shutdown-phase: ${TIMEOUT_PER_SHUTDOWN_PHASE:20s}

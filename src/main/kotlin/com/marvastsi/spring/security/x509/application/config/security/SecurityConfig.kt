@@ -1,10 +1,13 @@
 package com.marvastsi.spring.security.x509.application.config.security
 
-import com.marvastsi.spring.security.x509.application.config.security.filters.ApiKeyFilter
 import com.marvastsi.spring.security.x509.application.config.security.filters.JwtAuthenticationFilter
 import com.marvastsi.spring.security.x509.domain.commons.utils.JwtUtil
 import com.marvastsi.spring.security.x509.domain.model.User
 import com.marvastsi.spring.security.x509.domain.services.UserService
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
+import org.apache.logging.log4j.Marker
+import org.apache.logging.log4j.MarkerManager
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -15,7 +18,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 
@@ -24,14 +26,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class SecurityConfig(
     @Value("#{'\${auth.x509clients}'.split(',')}") private val x509clients: List<String>,
-    @Value("\${auth.api-key}") private val apiKey: String,
     @Value("\${auth.secret}") private val secret: String,
     private val unauthorizedHandler: UnauthorizedHandler
 ) : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity) {
         http.antMatcher("/need-ssl/**")
-            .addFilterBefore(apiKeyFilter(), UsernamePasswordAuthenticationFilter::class.java)
             .authorizeRequests()
             .antMatchers("/user/login").permitAll().and()
             .x509()
@@ -54,24 +54,6 @@ class SecurityConfig(
     }
 
     @Bean
-    fun apiKeyFilter(): ApiKeyFilter {
-        val apiKeyFilter = ApiKeyFilter(API_KEY_HEADER)
-        apiKeyFilter.setAuthenticationManager { authentication ->
-            if (authentication.principal == null) {
-                throw BadCredentialsException("Access Denied.")
-            }
-            val rApiKey = authentication.principal as String
-            if (apiKey == rApiKey) {
-                authentication.isAuthenticated = true
-                authentication
-            } else {
-                throw BadCredentialsException("Access Denied.")
-            }
-        }
-        return apiKeyFilter
-    }
-
-    @Bean
     fun userService(): UserService {
         return UserService(JwtUtil(secret))
     }
@@ -83,15 +65,14 @@ class SecurityConfig(
                 User(
                     username,
                     "",
-                    setOf("ROLE_USER")
+                    setOf("ROLE_SYSTEM")
                 )
             } else {
-                throw UsernameNotFoundException("Access Denied.")
+                logger.error(MarkerManager.Log4jMarker("SECURITY"),"Access Denied.")
+                throw BadCredentialsException("Access Denied.")
             }
         }
     }
 
-    companion object {
-        private const val API_KEY_HEADER = "x-api-key"
-    }
+    val logger: Logger = LogManager.getLogger(SecurityConfig::class.java.name)
 }
