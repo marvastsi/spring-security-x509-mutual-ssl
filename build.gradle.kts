@@ -9,13 +9,14 @@ plugins {
 
 group = "com.marvastsi"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_11
+java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
 	mavenCentral()
 }
 
 dependencies {
+	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -24,11 +25,14 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity5")
 	implementation("io.jsonwebtoken:jjwt:0.7.0")
-	implementation("com.sun.xml.bind:jaxb-impl:2.3.0")
-	implementation("com.sun.xml.bind:jaxb-core:2.3.0")
 	implementation("commons-configuration:commons-configuration:1.6")
 	implementation("commons-fileupload:commons-fileupload:1.4")
-//	implementation("javax.xml.bind:jaxb-api:2.3.1")
+	implementation("com.sun.xml.bind:jaxb-impl:2.3.0")
+	implementation("com.sun.xml.bind:jaxb-core:2.3.0")
+	implementation("javax.xml.bind:jaxb-api:2.3.1")
+//	implementation("javax.activation:activation:1.1.1")
+	implementation("jakarta.xml.bind:jakarta.xml.bind-api:2.3.2")
+	implementation("org.glassfish.jaxb:jaxb-runtime:2.3.2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 }
@@ -36,7 +40,7 @@ dependencies {
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
 		freeCompilerArgs = listOf("-Xjsr305=strict")
-		jvmTarget = "11"
+		jvmTarget = "1.8"
 	}
 }
 

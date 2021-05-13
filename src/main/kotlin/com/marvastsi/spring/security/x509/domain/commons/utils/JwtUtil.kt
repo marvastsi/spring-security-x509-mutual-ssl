@@ -13,7 +13,7 @@ class JwtUtil(
         val date = Date()
         val calendar = Calendar.getInstance()
         calendar.time = date
-        calendar.add(Calendar.DATE, +1)
+        calendar.add(Calendar.DATE, +7)
         return Jwts.builder()
             .setSubject(subject)
             .setIssuedAt(date)

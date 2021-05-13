@@ -17,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.web.authentication.preauth.x509.X509AuthenticationFilter
 
 
 @Configuration
@@ -24,14 +25,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 class SecurityConfig(
     @Value("#{'\${auth.x509clients}'.split(',')}") private val x509clients: List<String>,
-    @Value("\${auth.api-key}") private val apiKey: String,
     @Value("\${auth.secret}") private val secret: String,
     private val unauthorizedHandler: UnauthorizedHandler
 ) : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity) {
         http.antMatcher("/need-ssl/**")
-            .addFilterBefore(apiKeyFilter(), UsernamePasswordAuthenticationFilter::class.java)
             .authorizeRequests()
             .antMatchers("/user/login").permitAll().and()
             .x509()
@@ -54,24 +53,6 @@ class SecurityConfig(
     }
 
     @Bean
-    fun apiKeyFilter(): ApiKeyFilter {
-        val apiKeyFilter = ApiKeyFilter(API_KEY_HEADER)
-        apiKeyFilter.setAuthenticationManager { authentication ->
-            if (authentication.principal == null) {
-                throw BadCredentialsException("Access Denied.")
-            }
-            val rApiKey = authentication.principal as String
-            if (apiKey == rApiKey) {
-                authentication.isAuthenticated = true
-                authentication
-            } else {
-                throw BadCredentialsException("Access Denied.")
-            }
-        }
-        return apiKeyFilter
-    }
-
-    @Bean
     fun userService(): UserService {
         return UserService(JwtUtil(secret))
     }
@@ -89,9 +70,5 @@ class SecurityConfig(
                 throw UsernameNotFoundException("Access Denied.")
             }
         }
-    }
-
-    companion object {
-        private const val API_KEY_HEADER = "x-api-key"
     }
 }
